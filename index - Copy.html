@@ -82,402 +82,451 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 md:p-8 flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- Toast Notification Container -->
-    <div id="toast" class="flex items-center justify-center gap-2 shadow-xl bg-slate-800">
-        <span id="toast-icon-container"><i data-lucide="check-circle" class="text-green-400 w-5 h-5"></i></span>
-        <span id="toast-message">Το project αποθηκεύτηκε επιτυχώς!</span>
-    </div>
-
-    <!-- HISTORY MODAL -->
-    <div id="historyModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
-        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-        
-        <div class="modal-container bg-white w-11/12 md:max-w-7xl mx-auto rounded-xl shadow-2xl z-50 overflow-y-auto max-h-[90vh]">
-            
-            <!-- Modal Header -->
-            <div class="modal-content py-4 text-left px-6">
-                <div class="flex justify-between items-center pb-3 border-b">
-                    <p class="text-2xl font-bold text-gray-800">Ιστορικό Έργων</p>
-                    <div class="modal-close cursor-pointer z-50 p-2 hover:bg-gray-100 rounded-full">
-                        <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
-                    </div>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-indigo-100 rounded-full mb-4">
+                    <i data-lucide="lock" class="w-8 h-8 text-indigo-600"></i>
                 </div>
-
-                <!-- Modal Body (Table) -->
-                <div class="my-5 overflow-x-auto custom-scroll">
-                    <table class="min-w-full leading-normal">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Project / Διεύθυνση</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ημ/νία</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">m² Οικοπ.</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Τιμή Αγοράς</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Σ.Δ.</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Κόστος/m²</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Πώληση/m²</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Ολικό Κόστος</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Συν. Κέρδος</th>
-                                <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Ενέργεια</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Rows will be populated by JS -->
-                        </tbody>
-                    </table>
-                    <div id="loadingHistory" class="text-center py-10 hidden">
-                        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-indigo-600"></i>
-                        <p class="text-gray-500 mt-2">Φόρτωση δεδομένων...</p>
-                    </div>
-                    <div id="emptyHistory" class="text-center py-10 hidden">
-                        <p class="text-gray-500">Δεν βρέθηκαν αποθηκευμένα έργα.</p>
-                    </div>
-                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Είσοδος</h2>
+                <p class="text-gray-500 text-sm mt-1">Απαιτείται εξουσιοδότηση για πρόσβαση</p>
             </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="loginEmail" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all" placeholder="name@example.com" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Κωδικός</label>
+                    <input type="password" id="loginPassword" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all" placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="p-3 bg-red-50 text-red-600 text-sm rounded-lg hidden flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                    <span id="loginErrorText">Λάθος στοιχεία.</span>
+                </div>
+                <button type="submit" id="loginBtnSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-colors shadow-md flex justify-center items-center gap-2">
+                    <span>Σύνδεση</span>
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- DELETE CONFIRMATION MODAL -->
-    <div id="deleteModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-[60]">
-        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-        <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded-lg shadow-2xl z-50 overflow-y-auto">
-            <div class="modal-content py-4 text-left px-6">
-                <div class="flex justify-between items-center pb-3 border-b">
-                    <p class="text-lg font-bold text-gray-800">Διαγραφή Εγγραφής</p>
-                    <div class="cursor-pointer z-50 p-1 hover:bg-gray-100 rounded-full" id="closeDeleteModalX">
-                        <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
-                    </div>
-                </div>
-                <div class="my-5">
-                    <p class="text-gray-600">Είστε σίγουροι ότι θέλετε να διαγράψετε οριστικά αυτό το project;</p>
-                    <p class="text-sm text-red-500 mt-1">Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.</p>
-                </div>
-                <div class="flex justify-end gap-3 pt-2">
-                    <button id="cancelDeleteBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-medium transition-colors">
-                        Άκυρο
-                    </button>
-                    <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium shadow-md transition-colors flex items-center gap-2">
-                        <span>Διαγραφή</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- MAIN APP CONTENT (Hidden by default) -->
+    <div id="app-content" class="hidden w-full flex-col min-h-screen p-4 md:p-8">
 
-    <!-- Header -->
-    <header class="max-w-7xl mx-auto mb-8 w-full flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-            <div class="p-3 bg-indigo-600 rounded-lg text-white shadow-lg">
-                <i data-lucide="calculator" class="w-7 h-7"></i>
-            </div>
-            <div>
-                <h1 class="text-2xl font-bold text-indigo-900">Υπολογιστής Επένδυσης</h1>
-                <div class="flex items-center gap-2">
-                    <p class="text-slate-500 text-sm">Active Project:</p>
-                    <span id="activeProjectIndicator" class="text-xs font-bold px-2 py-1 bg-gray-200 text-gray-600 rounded">Κανένα</span>
-                </div>
-            </div>
+        <!-- Toast Notification Container -->
+        <div id="toast" class="flex items-center justify-center gap-2 shadow-xl bg-slate-800">
+            <span id="toast-icon-container"><i data-lucide="check-circle" class="text-green-400 w-5 h-5"></i></span>
+            <span id="toast-message">Το project αποθηκεύτηκε επιτυχώς!</span>
         </div>
-        
-        <!-- Action Buttons -->
-        <div class="flex gap-3">
-            <button id="resetBtn" class="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-2 px-6 rounded-lg shadow-sm transition-colors" title="Επαναφορά φορμας">
-                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                <span>Καθαρισμός</span>
-            </button>
 
-            <button id="historyBtn" class="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-2 px-6 rounded-lg shadow-sm transition-colors disabled:opacity-50">
-                <i data-lucide="history" class="w-4 h-4"></i>
-                <span>Ιστορικό</span>
-            </button>
+        <!-- HISTORY MODAL -->
+        <div id="historyModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+            <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
             
-            <button id="saveBtn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                <i data-lucide="save" class="w-4 h-4"></i>
-                <span>Αποθήκευση</span>
-            </button>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 w-full flex-grow">
-        
-        <!-- Left Column: Inputs -->
-        <div class="lg:col-span-4 space-y-6">
-            
-            <!-- Plot Details Card -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="map-pin" class="text-indigo-600 w-5 h-5"></i>
-                    Ταυτότητα Ακινήτου
-                </h2>
+            <div class="modal-container bg-white w-11/12 md:max-w-7xl mx-auto rounded-xl shadow-2xl z-50 overflow-y-auto max-h-[90vh]">
                 
-                <div class="space-y-4 mb-6 pb-6 border-b border-gray-100">
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required">Στοιχεία Οικοπέδου / Ονομασία</label>
-                        <input type="text" id="projectName" placeholder="π.χ. Οικόπεδο Γλυφάδα" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                <!-- Modal Header -->
+                <div class="modal-content py-4 text-left px-6">
+                    <div class="flex justify-between items-center pb-3 border-b">
+                        <p class="text-2xl font-bold text-gray-800">Ιστορικό Έργων</p>
+                        <div class="modal-close cursor-pointer z-50 p-2 hover:bg-gray-100 rounded-full">
+                            <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
+                        </div>
                     </div>
+
+                    <!-- Modal Body (Table) -->
+                    <div class="my-5 overflow-x-auto custom-scroll">
+                        <table class="min-w-full leading-normal">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Project / Διεύθυνση</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ημ/νία</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">m² Οικοπ.</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Τιμή Αγοράς</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Σ.Δ.</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Κόστος/m²</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Πώληση/m²</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Ολικό Κόστος</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Συν. Κέρδος</th>
+                                    <th class="px-4 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Ενέργεια</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Rows will be populated by JS -->
+                            </tbody>
+                        </table>
+                        <div id="loadingHistory" class="text-center py-10 hidden">
+                            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-indigo-600"></i>
+                            <p class="text-gray-500 mt-2">Φόρτωση δεδομένων...</p>
+                        </div>
+                        <div id="emptyHistory" class="text-center py-10 hidden">
+                            <p class="text-gray-500">Δεν βρέθηκαν αποθηκευμένα έργα.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DELETE CONFIRMATION MODAL -->
+        <div id="deleteModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-[60]">
+            <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+            <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded-lg shadow-2xl z-50 overflow-y-auto">
+                <div class="modal-content py-4 text-left px-6">
+                    <div class="flex justify-between items-center pb-3 border-b">
+                        <p class="text-lg font-bold text-gray-800">Διαγραφή Εγγραφής</p>
+                        <div class="cursor-pointer z-50 p-1 hover:bg-gray-100 rounded-full" id="closeDeleteModalX">
+                            <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="my-5">
+                        <p class="text-gray-600">Είστε σίγουροι ότι θέλετε να διαγράψετε οριστικά αυτό το project;</p>
+                        <p class="text-sm text-red-500 mt-1">Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.</p>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button id="cancelDeleteBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-medium transition-colors">
+                            Άκυρο
+                        </button>
+                        <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium shadow-md transition-colors flex items-center gap-2">
+                            <span>Διαγραφή</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="max-w-7xl mx-auto mb-8 w-full flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-3 bg-indigo-600 rounded-lg text-white shadow-lg">
+                    <i data-lucide="calculator" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-indigo-900">Υπολογιστής Επένδυσης</h1>
+                    <div class="flex items-center gap-2">
+                        <p class="text-slate-500 text-sm">Active Project:</p>
+                        <span id="activeProjectIndicator" class="text-xs font-bold px-2 py-1 bg-gray-200 text-gray-600 rounded">Κανένα</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+                <button id="resetBtn" class="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-2 px-6 rounded-lg shadow-sm transition-colors" title="Επαναφορά φορμας">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Καθαρισμός</span>
+                </button>
+
+                <button id="historyBtn" class="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-2 px-6 rounded-lg shadow-sm transition-colors disabled:opacity-50">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Ιστορικό</span>
+                </button>
+                
+                <button id="saveBtn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-lucide="save" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Αποθήκευση</span>
+                </button>
+
+                <div class="w-px bg-gray-300 mx-1"></div>
+
+                <button id="logoutBtn" class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors" title="Αποσύνδεση">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 w-full flex-grow">
+            
+            <!-- Left Column: Inputs -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Plot Details Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="text-indigo-600 w-5 h-5"></i>
+                        Ταυτότητα Ακινήτου
+                    </h2>
                     
-                    <div class="space-y-2">
-                        <!-- Row 1: Street & Number -->
-                        <div class="grid grid-cols-12 gap-2">
-                            <div class="col-span-8 input-group">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Οδός</label>
-                                <input type="text" id="addrStreet" placeholder="Ερμού" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                            </div>
-                            <div class="col-span-4 input-group">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Αρ.</label>
-                                <input type="text" id="addrNum" placeholder="10" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Area & Municipality -->
-                        <div class="grid grid-cols-12 gap-2">
-                            <div class="col-span-6 input-group">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Περιοχή</label>
-                                <input type="text" id="addrArea" placeholder="Κέντρο" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                            </div>
-                            <div class="col-span-6 input-group">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Δήμος</label>
-                                <input type="text" id="addrDimos" placeholder="Δ. Αθηναίων" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Google Map Container -->
-                    <div class="mt-2 rounded-lg overflow-hidden border border-gray-200 shadow-inner bg-gray-100 h-48 relative group">
-                        <iframe 
-                            id="gmap_canvas"
-                            width="100%" 
-                            height="100%" 
-                            frameborder="0" 
-                            scrolling="no" 
-                            marginheight="0" 
-                            marginwidth="0" 
-                            src="https://maps.google.com/maps?q=Greece&t=&z=5&ie=UTF8&iwloc=&output=embed">
-                        </iframe>
-                        <div class="absolute inset-0 pointer-events-none border-4 border-transparent group-hover:border-indigo-100 transition-all"></div>
-                    </div>
-                </div>
-
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="home" class="text-indigo-600 w-5 h-5"></i>
-                    Μετρήσεις & Όροι
-                </h2>
-
-                <div class="space-y-4">
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required">Εμβαδόν Οικοπέδου (m²)</label>
-                        <input type="number" id="plotSize" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                    </div>
-
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required">Τιμή Αγοράς Οικοπέδου (€)</label>
-                        <input type="number" id="plotPrice" value="" step="1000" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-4 mb-6 pb-6 border-b border-gray-100">
                         <div class="input-group">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Σ.Δ (π.χ. 0.8)</label>
-                            <input type="number" id="buildFactor" value="" step="0.1" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                        </div>
-                        <div class="input-group">
-                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Κάλυψη (%)</label>
-                            <input type="number" id="coverageFactor" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Financial Details Card -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="dollar-sign" class="text-green-600 w-5 h-5"></i>
-                    Οικονομικά Στοιχεία
-                </h2>
-                <div class="space-y-4">
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required">Κόστος Κατασκευής (€/m²)</label>
-                        <input type="number" id="costPerSqm" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                    </div>
-
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required">Τιμή Πώλησης (€/m²)</label>
-                        <input type="number" id="sellPricePerSqm" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right Column: Results & Charts -->
-        <div class="lg:col-span-8 space-y-6">
-            
-            <!-- KPI Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-orange-500 flex items-center">
-                    <div class="p-3 rounded-full bg-orange-50 mr-4">
-                        <i data-lucide="activity" class="text-orange-600 w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Συνολική Επένδυση</p>
-                        <p class="text-lg font-bold text-gray-900" id="res-totalInvestment">€0</p>
-                    </div>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500 flex items-center">
-                    <div class="p-3 rounded-full bg-blue-50 mr-4">
-                        <i data-lucide="trending-up" class="text-blue-600 w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Συνολικά Έσοδα</p>
-                        <p class="text-lg font-bold text-gray-900" id="res-totalRevenue">€0</p>
-                    </div>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500 flex items-center">
-                    <div class="p-3 rounded-full bg-green-50 mr-4">
-                        <i data-lucide="banknote" class="text-green-600 w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Καθαρό Κέρδος</p>
-                        <p class="text-lg font-bold text-gray-900" id="res-grossProfit">€0</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Unit Analysis Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-slate-800 text-white p-5 rounded-lg shadow flex justify-between items-center">
-                    <div>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Τελικο Κοστος / m²</p>
-                        <p class="text-xs text-slate-400 mt-1">(Γη + Κατασκευή)</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-orange-400" id="res-finalCostPerSqm">€0</p>
-                        <p class="text-xs text-slate-400">ανά δομήσιμο μέτρο</p>
-                    </div>
-                </div>
-                <div class="bg-slate-800 text-white p-5 rounded-lg shadow flex justify-between items-center">
-                    <div>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Κερδος / m²</p>
-                        <p class="text-xs text-slate-400 mt-1">(Καθαρό Κέρδος)</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-green-400" id="res-profitPerSqm">€0</p>
-                        <p class="text-xs text-slate-400">ανά δομήσιμο μέτρο</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Build Potential Stats (NEW SECTION) -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-                
-                <!-- Buildable Area (Above Strength) -->
-                <div class="md:col-span-3 bg-indigo-900 text-white p-5 rounded-xl shadow-lg flex justify-between items-center">
-                    <div>
-                        <p class="text-indigo-200 text-xs font-bold uppercase tracking-wider">Δομησιμα Μετρα</p>
-                        <p class="text-xs text-indigo-300 mt-1">(Σ.Δ.)</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-white" id="res-buildableArea">0 m²</p>
-                    </div>
-                </div>
-
-                <!-- Max Coverage (Above Risk) -->
-                <div class="md:col-span-2 bg-indigo-900 text-white p-5 rounded-xl shadow-lg flex justify-between items-center">
-                     <div>
-                        <p class="text-indigo-200 text-xs font-bold uppercase tracking-wider">Μεγιστη Καλυψη</p>
-                        <p class="text-xs text-indigo-300 mt-1">(% Οικοπέδου)</p>
-                    </div>
-                    <div class="text-right">
-                         <p class="text-2xl font-bold text-white" id="res-coverageArea">0 m²</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Strength Meter & Risk Circle Row -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-                
-                <!-- Investment Strength Meter (Indicator Style) -->
-                <div class="md:col-span-3 bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
-                        <i data-lucide="gauge" class="w-5 h-5 text-indigo-600"></i> 
-                        Δυναμική Επένδυσης (Strength)
-                    </h3>
-                    
-                    <div class="relative pt-6 pb-2">
-                        <div class="flex justify-between mb-2">
-                             <span class="text-sm font-medium text-gray-500">Ρίσκο (0%)</span>
-                             <span class="text-xl font-black transition-colors duration-300" id="strength-label">--</span>
-                             <span class="text-sm font-medium text-gray-500">Ευκαιρία (100%)</span>
-                        </div>
-
-                        <div class="h-8 w-full strength-gradient rounded-full shadow-inner relative border border-gray-300">
-                            <div id="strength-marker" class="absolute top-0 bottom-0 w-3 bg-black rounded-lg shadow-xl transition-all duration-700 ease-out border-2 border-white/20 transform -translate-x-1/2" style="left: 0%"></div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Στοιχεία Οικοπέδου / Ονομασία</label>
+                            <input type="text" id="projectName" placeholder="π.χ. Οικόπεδο Γλυφάδα" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
                         </div>
                         
-                        <div class="flex justify-between text-xs text-gray-400 mt-2 px-1">
-                            <span>0%</span>
-                            <span>25%</span>
-                            <span>50%</span>
-                            <span>75%</span>
-                            <span>100%</span>
+                        <div class="space-y-2">
+                            <!-- Row 1: Street & Number -->
+                            <div class="grid grid-cols-12 gap-2">
+                                <div class="col-span-8 input-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Οδός</label>
+                                    <input type="text" id="addrStreet" placeholder="Ερμού" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                                </div>
+                                <div class="col-span-4 input-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Αρ.</label>
+                                    <input type="text" id="addrNum" placeholder="10" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Area & Municipality -->
+                            <div class="grid grid-cols-12 gap-2">
+                                <div class="col-span-6 input-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Περιοχή</label>
+                                    <input type="text" id="addrArea" placeholder="Κέντρο" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                                </div>
+                                <div class="col-span-6 input-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Δήμος</label>
+                                    <input type="text" id="addrDimos" placeholder="Δ. Αθηναίων" class="address-input w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mt-4 text-center">
-                            <p class="text-sm text-gray-600">Απόδοση ROI: <span class="font-bold text-indigo-600" id="strength-roi-val">0%</span></p>
+                        <!-- Google Map Container -->
+                        <div class="mt-2 rounded-lg overflow-hidden border border-gray-200 shadow-inner bg-gray-100 h-48 relative group">
+                            <iframe 
+                                id="gmap_canvas"
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0" 
+                                scrolling="no" 
+                                marginheight="0" 
+                                marginwidth="0" 
+                                src="https://maps.google.com/maps?q=Greece&t=&z=5&ie=UTF8&iwloc=&output=embed">
+                            </iframe>
+                            <div class="absolute inset-0 pointer-events-none border-4 border-transparent group-hover:border-indigo-100 transition-all"></div>
+                        </div>
+                    </div>
+
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="home" class="text-indigo-600 w-5 h-5"></i>
+                        Μετρήσεις & Όροι
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Εμβαδόν Οικοπέδου (m²)</label>
+                            <input type="number" id="plotSize" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Τιμή Αγοράς Οικοπέδου (€)</label>
+                            <input type="number" id="plotPrice" value="" step="1000" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="input-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1 required">Σ.Δ (π.χ. 0.8)</label>
+                                <input type="number" id="buildFactor" value="" step="0.1" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                            </div>
+                            <div class="input-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1 required">Κάλυψη (%)</label>
+                                <input type="number" id="coverageFactor" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Risk Circle (Gauge) -->
-                <div class="md:col-span-2 bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
-                    <h3 class="text-md font-bold text-gray-700 mb-2 flex items-center gap-2">
-                        <i data-lucide="alert-triangle" class="w-5 h-5 text-orange-500"></i> 
-                        Εκτίμηση Ρίσκου
-                    </h3>
-                    <div class="h-40 w-full relative flex justify-center items-center">
-                        <canvas id="riskChart"></canvas>
-                        <!-- Center Text overlay for Gauge -->
-                        <div class="absolute inset-0 flex items-center justify-center top-8 pointer-events-none">
-                            <span id="risk-text" class="text-xl font-bold text-gray-600">--</span>
+                <!-- Financial Details Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="dollar-sign" class="text-green-600 w-5 h-5"></i>
+                        Οικονομικά Στοιχεία
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Κόστος Κατασκευής (€/m²)</label>
+                            <input type="number" id="costPerSqm" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1 required">Τιμή Πώλησης (€/m²)</label>
+                            <input type="number" id="sellPricePerSqm" value="" class="w-full border-gray-300 border rounded-md p-2 focus:outline-none focus:border-indigo-500 transition shadow-sm">
                         </div>
                     </div>
-                    <p class="text-xs text-center text-gray-400 mt-0">Βάσει περιθωρίου κέρδους</p>
                 </div>
+
             </div>
 
-            <!-- Charts Row -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Right Column: Results & Charts -->
+            <div class="lg:col-span-8 space-y-6">
                 
-                <!-- Pie Chart 1: Cost Breakdown -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
-                        <i data-lucide="pie-chart" class="w-4 h-4"></i> Ανάλυση Κόστους
-                    </h3>
-                    <div class="h-64 relative w-full flex justify-center">
-                        <canvas id="costChart"></canvas>
+                <!-- KPI Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-orange-500 flex items-center">
+                        <div class="p-3 rounded-full bg-orange-50 mr-4">
+                            <i data-lucide="activity" class="text-orange-600 w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Συνολική Επένδυση</p>
+                            <p class="text-lg font-bold text-gray-900" id="res-totalInvestment">€0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500 flex items-center">
+                        <div class="p-3 rounded-full bg-blue-50 mr-4">
+                            <i data-lucide="trending-up" class="text-blue-600 w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Συνολικά Έσοδα</p>
+                            <p class="text-lg font-bold text-gray-900" id="res-totalRevenue">€0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500 flex items-center">
+                        <div class="p-3 rounded-full bg-green-50 mr-4">
+                            <i data-lucide="banknote" class="text-green-600 w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Καθαρό Κέρδος</p>
+                            <p class="text-lg font-bold text-gray-900" id="res-grossProfit">€0</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Pie Chart 2: Revenue Breakdown -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
-                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-green-600"></i> Κόστος vs Κέρδος
-                    </h3>
-                    <div class="h-64 relative w-full flex justify-center">
-                        <canvas id="revenueChart"></canvas>
+                <!-- Unit Analysis Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800 text-white p-5 rounded-lg shadow flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Τελικο Κοστος / m²</p>
+                            <p class="text-xs text-slate-400 mt-1">(Γη + Κατασκευή)</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-orange-400" id="res-finalCostPerSqm">€0</p>
+                            <p class="text-xs text-slate-400">ανά δομήσιμο μέτρο</p>
+                        </div>
                     </div>
-                    <p class="text-xs text-center text-gray-400 mt-2">Κατανομή των συνολικών εσόδων</p>
+                    <div class="bg-slate-800 text-white p-5 rounded-lg shadow flex justify-between items-center">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Κερδος / m²</p>
+                            <p class="text-xs text-slate-400 mt-1">(Καθαρό Κέρδος)</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-green-400" id="res-profitPerSqm">€0</p>
+                            <p class="text-xs text-slate-400">ανά δομήσιμο μέτρο</p>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Build Potential Stats (NEW SECTION) -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                    
+                    <!-- Buildable Area (Above Strength) -->
+                    <div class="md:col-span-3 bg-indigo-900 text-white p-5 rounded-xl shadow-lg flex justify-between items-center">
+                        <div>
+                            <p class="text-indigo-200 text-xs font-bold uppercase tracking-wider">Δομησιμα Μετρα</p>
+                            <p class="text-xs text-indigo-300 mt-1">(Σ.Δ.)</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-white" id="res-buildableArea">0 m²</p>
+                        </div>
+                    </div>
+
+                    <!-- Max Coverage (Above Risk) -->
+                    <div class="md:col-span-2 bg-indigo-900 text-white p-5 rounded-xl shadow-lg flex justify-between items-center">
+                        <div>
+                            <p class="text-indigo-200 text-xs font-bold uppercase tracking-wider">Μεγιστη Καλυψη</p>
+                            <p class="text-xs text-indigo-300 mt-1">(% Οικοπέδου)</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-white" id="res-coverageArea">0 m²</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strength Meter & Risk Circle Row -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                    
+                    <!-- Investment Strength Meter (Indicator Style) -->
+                    <div class="md:col-span-3 bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
+                            <i data-lucide="gauge" class="w-5 h-5 text-indigo-600"></i> 
+                            Δυναμική Επένδυσης (Strength)
+                        </h3>
+                        
+                        <div class="relative pt-6 pb-2">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-500">Ρίσκο (0%)</span>
+                                <span class="text-xl font-black transition-colors duration-300" id="strength-label">--</span>
+                                <span class="text-sm font-medium text-gray-500">Ευκαιρία (100%)</span>
+                            </div>
+
+                            <div class="h-8 w-full strength-gradient rounded-full shadow-inner relative border border-gray-300">
+                                <div id="strength-marker" class="absolute top-0 bottom-0 w-3 bg-black rounded-lg shadow-xl transition-all duration-700 ease-out border-2 border-white/20 transform -translate-x-1/2" style="left: 0%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-xs text-gray-400 mt-2 px-1">
+                                <span>0%</span>
+                                <span>25%</span>
+                                <span>50%</span>
+                                <span>75%</span>
+                                <span>100%</span>
+                            </div>
+
+                            <div class="mt-4 text-center">
+                                <p class="text-sm text-gray-600">Απόδοση ROI: <span class="font-bold text-indigo-600" id="strength-roi-val">0%</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Circle (Gauge) -->
+                    <div class="md:col-span-2 bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+                        <h3 class="text-md font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-orange-500"></i> 
+                            Εκτίμηση Ρίσκου
+                        </h3>
+                        <div class="h-40 w-full relative flex justify-center items-center">
+                            <canvas id="riskChart"></canvas>
+                            <!-- Center Text overlay for Gauge -->
+                            <div class="absolute inset-0 flex items-center justify-center top-8 pointer-events-none">
+                                <span id="risk-text" class="text-xl font-bold text-gray-600">--</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-center text-gray-400 mt-0">Βάσει περιθωρίου κέρδους</p>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Pie Chart 1: Cost Breakdown -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
+                            <i data-lucide="pie-chart" class="w-4 h-4"></i> Ανάλυση Κόστους
+                        </h3>
+                        <div class="h-64 relative w-full flex justify-center">
+                            <canvas id="costChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Pie Chart 2: Revenue Breakdown -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
+                            <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-green-600"></i> Κόστος vs Κέρδος
+                        </h3>
+                        <div class="h-64 relative w-full flex justify-center">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-gray-400 mt-2">Κατανομή των συνολικών εσόδων</p>
+                    </div>
+                </div>
+
             </div>
-
-        </div>
-    </main>
-    
-    <!-- Footer with User ID info -->
-    <footer class="max-w-7xl mx-auto w-full mt-8 p-4 border-t border-gray-200 text-center text-xs text-gray-400">
-        <p>Real Estate Investment Calculator</p>
-        <p class="mt-1">User ID: <span id="userIdDisplay" class="font-mono text-gray-500 select-all">--</span></p>
-    </footer>
+        </main>
+        
+        <!-- Footer with User ID info -->
+        <footer class="max-w-7xl mx-auto w-full mt-8 p-6 border-t border-gray-200 text-center text-sm text-gray-500">
+            <div class="flex flex-col gap-2 mb-4">
+                <p class="font-medium text-gray-800">Η εφαρμογή αυτή είναι σχεδιασμένη και φτιαγμένη από τον Θανάση Αθανασόπουλο</p>
+                <p class="text-gray-600">This application is designed and built by Thanasis Athanasopoulos</p>
+                <a href="mailto:sakissystems@gmail.com" class="text-indigo-600 font-bold hover:underline">sakissystems@gmail.com</a>
+            </div>
+            
+            <div class="mt-6 text-xs text-gray-400">
+                <p>Real Estate Investment Calculator</p>
+                <p class="mt-1">User: <span id="userIdDisplay" class="font-bold text-indigo-600">--</span></p>
+            </div>
+        </footer>
+    </div>
 
     <script type="module">
         // --- 1. Initialize Icons ---
@@ -490,14 +539,11 @@
 
         // --- 3. Firebase Setup ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // Added 'signInWithEmailAndPassword' and 'signOut'
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // =========================================================================
-        // ΠΡΟΣΟΧΗ: Εδώ θα βάλεις τα δικά σου κλειδιά όταν είσαι έτοιμος!
-        // Προς το παρόν χρησιμοποιούμε τα κλειδιά του συστήματος (__firebase_config).
-        // =========================================================================
-        
+        // Firebase Config
         const firebaseConfig = typeof __firebase_config !== 'undefined' 
              ? JSON.parse(__firebase_config) 
              : {
@@ -510,7 +556,7 @@
                  measurementId: import.meta.env.VITE_MEASUREMENT_ID
              };
 
-        // --- Wrap Firebase Init in Try/Catch for robustness ---
+        // --- Init Firebase ---
         let app, auth, db;
         try {
             app = initializeApp(firebaseConfig);
@@ -522,59 +568,118 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
+        // --- UI Reference Elements ---
+        const loginScreen = document.getElementById('login-screen');
+        const appContent = document.getElementById('app-content');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const loginErrorText = document.getElementById('loginErrorText');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+
+        // Main App Elements
         let currentUser = null;
-        let currentDocId = null; // Store the ID of the loaded document
+        let currentDocId = null;
 
         const saveBtn = document.getElementById('saveBtn');
         const historyBtn = document.getElementById('historyBtn');
         const resetBtn = document.getElementById('resetBtn');
-        const userIdDisplay = document.getElementById('userIdDisplay');
         const activeProjectIndicator = document.getElementById('activeProjectIndicator');
 
-        // Authentication Logic
-        async function initAuth() {
-            if (!auth) {
-                console.warn("Auth not initialized. Check firebaseConfig.");
-                saveBtn.disabled = true;
-                saveBtn.innerText = "Λείπουν κλειδιά (.env)";
-                return;
-            }
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth Error:", error);
-                saveBtn.disabled = true;
-                saveBtn.innerText = "Σφάλμα Σύνδεσης";
-            }
-        }
-        
-        initAuth();
-
+        // --- AUTHENTICATION LOGIC ---
         if (auth) {
             onAuthStateChanged(auth, (user) => {
+                // *** ΝΕΟΣ ΕΛΕΓΧΟΣ ***
+                // Αν ο χρήστης είναι Ανώνυμος (από παλιά συνεδρία), τον κάνουμε logout αμέσως.
+                if (user && user.isAnonymous) {
+                    console.log("Βρέθηκε παλιά ανώνυμη σύνδεση. Γίνεται αποσύνδεση...");
+                    signOut(auth);
+                    return;
+                }
+                
                 if (user) {
+                    // User is Logged In
                     currentUser = user;
+                    userIdDisplay.textContent = user.email || user.uid;
+                    
+                    // Show App, Hide Login
+                    loginScreen.classList.add('hidden');
+                    appContent.classList.remove('hidden');
+                    appContent.classList.add('flex'); // Restore flex layout
+                    
+                    // Enable buttons
                     saveBtn.disabled = false;
                     historyBtn.disabled = false;
-                    // Show User ID
-                    userIdDisplay.textContent = user.uid;
+                    
+                    lucide.createIcons(); // Re-render icons just in case
                 } else {
+                    // User is Logged Out
+                    currentUser = null;
+                    userIdDisplay.textContent = "Αποσυνδέθηκε";
+                    
+                    // Show Login, Hide App
+                    loginScreen.classList.remove('hidden');
+                    appContent.classList.add('hidden');
+                    appContent.classList.remove('flex');
+
+                    // Disable buttons
                     saveBtn.disabled = true;
                     historyBtn.disabled = true;
-                    userIdDisplay.textContent = "Αποσυνδέθηκε";
                 }
             });
         }
+
+        // --- LOGIN ACTION ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtnSubmit');
+            const originalBtnContent = btn.innerHTML;
+
+            // Reset Error
+            loginError.classList.add('hidden');
+            
+            // Loading State
+            btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-5 h-5"></i>';
+            btn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will handle the redirect
+            } catch (error) {
+                console.error("Login Error:", error);
+                
+                let msg = "Αποτυχία σύνδεσης.";
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    msg = "Λάθος email ή κωδικός.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    msg = "Πολλές αποτυχημένες προσπάθειες. Δοκιμάστε αργότερα.";
+                }
+
+                loginErrorText.textContent = msg;
+                loginError.classList.remove('hidden');
+                
+                // Reset Button
+                btn.innerHTML = originalBtnContent;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        // --- LOGOUT ACTION ---
+        logoutBtn.addEventListener('click', () => {
+            if(confirm("Θέλετε σίγουρα να αποσυνδεθείτε;")) {
+                signOut(auth);
+            }
+        });
 
         // --- SAVE Function ---
         saveBtn.addEventListener('click', async () => {
             if (!currentUser) return;
 
-            // --- Validation Logic START ---
+            // Validation
             const requiredIds = [
                 'projectName', 
                 'plotSize', 
@@ -589,9 +694,8 @@
             requiredIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el.value.trim()) {
-                    el.classList.add('input-error'); // Add visual error class
+                    el.classList.add('input-error');
                     missingFields = true;
-                    // Remove error on input
                     el.addEventListener('input', () => {
                         el.classList.remove('input-error');
                     }, { once: true });
@@ -602,9 +706,8 @@
 
             if (missingFields) {
                 showToast("Παρακαλώ συμπληρώστε όλα τα υποχρεωτικά πεδία!", "error");
-                return; // STOP execution here
+                return;
             }
-            // --- Validation Logic END ---
 
             // Collect Data
             const projectName = document.getElementById('projectName').value || "Ανώνυμο Project";
@@ -648,11 +751,8 @@
             saveBtn.disabled = true;
 
             try {
-                // RULE 1 compliant path
-                // Using PUBLIC path so data persists across anonymous reloads locally
+                // Using PUBLIC path so data persists across sessions but requires Login now
                 const docRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'calculations'), data);
-                
-                // Set current doc ID so we can delete it immediately if needed
                 currentDocId = docRef.id;
                 
                 updateActiveProjectUI(projectName);
@@ -678,7 +778,6 @@
             document.getElementById('addrArea').value = '';
             document.getElementById('addrDimos').value = '';
             
-            // Clear all numeric inputs to empty
             document.getElementById('plotSize').value = '';
             document.getElementById('plotPrice').value = '';
             document.getElementById('buildFactor').value = '';
@@ -686,7 +785,6 @@
             document.getElementById('costPerSqm').value = '';
             document.getElementById('sellPricePerSqm').value = '';
             
-            // Remove error classes if present
             const requiredIds = ['projectName', 'plotSize', 'plotPrice', 'buildFactor', 'coverageFactor', 'costPerSqm', 'sellPricePerSqm'];
             requiredIds.forEach(id => document.getElementById(id).classList.remove('input-error'));
 
@@ -705,7 +803,6 @@
                 activeProjectIndicator.className = "text-xs font-bold px-2 py-1 bg-green-100 text-green-700 rounded border border-green-200";
             }
         }
-
 
         // --- HISTORY Logic ---
         const modal = document.getElementById('historyModal');
@@ -737,7 +834,6 @@
         modalOverlay.addEventListener('click', toggleModal);
         modalClose.addEventListener('click', toggleModal);
 
-        // Delete Modal Listeners
         closeDeleteModalX.addEventListener('click', () => {
             docIdToDelete = null;
             toggleDeleteModal();
@@ -750,28 +846,20 @@
         confirmDeleteBtn.addEventListener('click', async () => {
             if (!docIdToDelete || !currentUser) return;
 
-            // Change button state
             const originalHtml = confirmDeleteBtn.innerHTML;
             confirmDeleteBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Διαγραφή...`;
             confirmDeleteBtn.disabled = true;
             lucide.createIcons();
 
             try {
-                // Delete from Firestore (Public path)
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calculations', docIdToDelete));
-                
-                // Show success toast
-                toggleDeleteModal(); // Close confirmation
+                toggleDeleteModal();
                 showToast("Η εγγραφή διαγράφηκε.", "success");
-                
-                // Refresh list
                 loadHistory(); 
-
             } catch (error) {
                 console.error("Error deleting doc:", error);
                 showToast("Σφάλμα διαγραφής.", "error");
             } finally {
-                // Reset button
                 confirmDeleteBtn.innerHTML = originalHtml;
                 confirmDeleteBtn.disabled = false;
                 lucide.createIcons();
@@ -779,7 +867,6 @@
             }
         });
 
-        // Fetch History
         historyBtn.addEventListener('click', loadHistory);
 
         async function loadHistory() {
@@ -793,14 +880,12 @@
             emptyHistory.classList.add('hidden');
 
             try {
-                // Fetch from PUBLIC path so data persists across anonymous reloads (LOCAL FIX)
                 const q = query(
                     collection(db, 'artifacts', appId, 'public', 'data', 'calculations'), 
                     orderBy('timestamp', 'desc')
                 );
                 
                 const querySnapshot = await getDocs(q);
-                
                 loadingHistory.classList.add('hidden');
 
                 if (querySnapshot.empty) {
@@ -814,7 +899,6 @@
                     const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('el-GR') : '-';
                     const inputs = d.inputs || d; 
                     
-                    // Calculate totals for display if not saved directly
                     const totalInv = d.results?.totalInvestment || ( (inputs.plotPrice) + ((inputs.plotSize*inputs.buildFactor)*inputs.costPerSqm) );
                     const grossProf = d.results?.grossProfit || ( ( (inputs.plotSize*inputs.buildFactor)*inputs.sellPricePerSqm ) - totalInv );
 
@@ -846,13 +930,11 @@
                         </td>
                     `;
                     
-                    // Click on ROW loads data
                     row.addEventListener('click', () => {
                         populateData(d, docId);
                         toggleModal();
                     });
 
-                    // Load Button specifically
                     const loadBtn = row.querySelector('.load-btn');
                     loadBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -860,10 +942,9 @@
                         toggleModal();
                     });
 
-                    // Delete Button
                     const deleteBtn = row.querySelector('.delete-btn');
                     deleteBtn.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Stop row click
+                        e.stopPropagation();
                         docIdToDelete = docId;
                         toggleDeleteModal();
                     });
@@ -880,11 +961,9 @@
         }
 
         function populateData(data, docId) {
-            // Store the ID of the loaded document
             currentDocId = docId;
             updateActiveProjectUI(data.projectName);
 
-            // Check structure (flat vs nested)
             const inputs = data.inputs || data;
             const addr = data.address || {};
 
@@ -901,7 +980,6 @@
             document.getElementById('costPerSqm').value = inputs.costPerSqm || 0;
             document.getElementById('sellPricePerSqm').value = inputs.sellPricePerSqm || 0;
 
-            // Trigger Recalculate
             calculate();
             updateMap();
         }
@@ -910,7 +988,7 @@
         function showToast(msg, type = "success") {
             const toast = document.getElementById('toast');
             const msgSpan = document.getElementById('toast-message');
-            const iconContainer = document.getElementById('toast-icon-container'); // Safely target wrapper
+            const iconContainer = document.getElementById('toast-icon-container');
             
             msgSpan.innerText = msg;
             
@@ -925,14 +1003,12 @@
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
-
-        // --- 4. Helper Formatters ---
+        // --- Helper Formatters ---
         const formatCurrency = (val) => new Intl.NumberFormat('el-GR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
         const formatNumber = (val) => new Intl.NumberFormat('el-GR', { maximumFractionDigits: 2 }).format(val);
 
-        // --- 5. Main Calculation Function ---
+        // --- Main Calculation Function ---
         function calculate() {
-            // Get Input Values
             const plotSize = parseFloat(document.getElementById('plotSize').value) || 0;
             const plotPrice = parseFloat(document.getElementById('plotPrice').value) || 0;
             const buildFactor = parseFloat(document.getElementById('buildFactor').value) || 0;
@@ -940,7 +1016,6 @@
             const costPerSqm = parseFloat(document.getElementById('costPerSqm').value) || 0;
             const sellPricePerSqm = parseFloat(document.getElementById('sellPricePerSqm').value) || 0;
 
-            // Calculations
             const buildableArea = plotSize * buildFactor;
             const coverageArea = plotSize * (coverageFactor / 100);
             
@@ -956,7 +1031,6 @@
             const roi = totalInvestment > 0 ? (grossProfit / totalInvestment) * 100 : 0;
             const profitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
 
-            // Update Text UI
             document.getElementById('res-buildableArea').textContent = formatNumber(buildableArea) + ' m²';
             document.getElementById('res-coverageArea').textContent = formatNumber(coverageArea) + ' m²';
             
@@ -967,14 +1041,11 @@
             document.getElementById('res-finalCostPerSqm').textContent = formatCurrency(finalCostPerSqm);
             document.getElementById('res-profitPerSqm').textContent = formatCurrency(profitPerSqm);
 
-            // Update Strength Meter
             updateStrengthMeter(roi);
-
-            // Update Charts
             updateCharts(plotPrice, constructionCost, totalInvestment, grossProfit, profitMargin);
         }
 
-        // --- 6. Strength Meter Logic ---
+        // --- Strength Meter ---
         function updateStrengthMeter(roi) {
             const marker = document.getElementById('strength-marker');
             const label = document.getElementById('strength-label');
@@ -1003,10 +1074,8 @@
             }
         }
 
-        // --- 7. Chart Update Logic ---
+        // --- Chart Update ---
         function updateCharts(plotPrice, constructionCost, totalInvestment, grossProfit, profitMargin) {
-            
-            // 7.1 Cost Pie Chart
             const costCtx = document.getElementById('costChart').getContext('2d');
             if (costChartInstance) costChartInstance.destroy();
             
@@ -1028,7 +1097,6 @@
                 }
             });
 
-            // 7.2 Revenue Pie Chart
             const revCtx = document.getElementById('revenueChart').getContext('2d');
             if (revenueChartInstance) revenueChartInstance.destroy();
 
@@ -1065,7 +1133,6 @@
                 }
             });
 
-            // 7.3 Risk Gauge Chart (Doughnut)
             let riskScore = 100 - (profitMargin * 2.8);
             riskScore = Math.max(0, Math.min(100, riskScore));
             
@@ -1110,7 +1177,7 @@
             });
         }
 
-        // --- 8. Google Map Logic ---
+        // --- Map Logic ---
         function updateMap() {
             const street = document.getElementById('addrStreet').value.trim();
             const num = document.getElementById('addrNum').value.trim();
@@ -1132,8 +1199,7 @@
             }
         }
 
-        // --- 9. Event Listeners (Inside Module) ---
-        // Calc listeners
+        // --- Event Listeners ---
         const calcInputs = [
             'plotSize', 'plotPrice', 'buildFactor', 'coverageFactor', 'costPerSqm', 'sellPricePerSqm'
         ];
@@ -1142,14 +1208,12 @@
             if(el) el.addEventListener('input', calculate);
         });
 
-        // Map listeners
         const addrInputs = document.querySelectorAll('.address-input');
         addrInputs.forEach(input => {
             input.addEventListener('blur', updateMap);
             input.addEventListener('change', updateMap);
         });
 
-        // Initial Run
         window.onload = function() {
            calculate();
         }
