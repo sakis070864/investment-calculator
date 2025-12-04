@@ -124,6 +124,63 @@
             <span id="toast-message">Το project αποθηκεύτηκε επιτυχώς!</span>
         </div>
 
+        <!-- INFO MODAL (NEW) -->
+        <div id="infoModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-[70]">
+            <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+            <div class="modal-container bg-white w-11/12 md:max-w-lg mx-auto rounded-xl shadow-2xl z-50 overflow-y-auto">
+                <div class="modal-content py-4 text-left px-6">
+                    <div class="flex justify-between items-center pb-3 border-b">
+                        <p class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            <i data-lucide="info" class="w-6 h-6 text-indigo-600"></i>
+                            Ταυτότητα Εφαρμογής
+                        </p>
+                        <div class="cursor-pointer z-50 p-1 hover:bg-gray-100 rounded-full" id="closeInfoModalX">
+                            <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="my-5 space-y-4">
+                        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-xs text-gray-500 uppercase font-semibold">Εφαρμογη</p>
+                            <p class="text-gray-900 font-medium">Real Estate Investment Calculator <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full ml-2">v1.0.0</span></p>
+                        </div>
+
+                        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-xs text-gray-500 uppercase font-semibold">GitHub Repository (Code)</p>
+                            <a href="https://github.com/sakis070864/investment-calculator" target="_blank" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 break-all text-sm mt-1">
+                                <i data-lucide="github" class="w-4 h-4"></i> sakis070864/investment-calculator
+                            </a>
+                        </div>
+
+                        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-xs text-gray-500 uppercase font-semibold">Vercel Deployment (Live)</p>
+                            <a href="https://oikodomi.vercel.app" target="_blank" class="text-green-600 hover:text-green-800 flex items-center gap-1 break-all text-sm mt-1">
+                                <i data-lucide="globe" class="w-4 h-4"></i> https://oikodomi.vercel.app
+                            </a>
+                        </div>
+
+                        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-xs text-gray-500 uppercase font-semibold">Firebase Project ID</p>
+                            <p class="text-gray-900 font-mono text-sm mt-1">sakisathan-28c2e</p>
+                        </div>
+
+                        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-xs text-gray-500 uppercase font-semibold">Tech Stack</p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="px-2 py-1 bg-white border border-gray-300 rounded text-xs">HTML5</span>
+                                <span class="px-2 py-1 bg-white border border-gray-300 rounded text-xs">Tailwind CSS</span>
+                                <span class="px-2 py-1 bg-white border border-gray-300 rounded text-xs">Firebase (Auth & Firestore)</span>
+                                <span class="px-2 py-1 bg-white border border-gray-300 rounded text-xs">Chart.js</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center pt-2">
+                            <p class="text-xs text-gray-400">Developer: Thanasis Athanasopoulos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- HISTORY MODAL -->
         <div id="historyModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
             <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -521,9 +578,16 @@
                 <a href="mailto:sakissystems@gmail.com" class="text-indigo-600 font-bold hover:underline">sakissystems@gmail.com</a>
             </div>
             
-            <div class="mt-6 text-xs text-gray-400">
-                <p>Real Estate Investment Calculator</p>
-                <p class="mt-1">User: <span id="userIdDisplay" class="font-bold text-indigo-600">--</span></p>
+            <div class="flex flex-col items-center justify-center gap-2 mt-4">
+                <!-- INFO BUTTON -->
+                <button id="infoBtn" class="flex items-center gap-2 px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full text-xs font-semibold transition-colors border border-gray-300">
+                    <i data-lucide="info" class="w-3 h-3"></i> Ταυτότητα Εφαρμογής (Project Info)
+                </button>
+
+                <div class="mt-2 text-xs text-gray-400">
+                    <p>Real Estate Investment Calculator</p>
+                    <p class="mt-1">User: <span id="userIdDisplay" class="font-bold text-indigo-600">--</span></p>
+                </div>
             </div>
         </footer>
     </div>
@@ -983,6 +1047,23 @@
             calculate();
             updateMap();
         }
+
+        // --- INFO MODAL Logic (NEW) ---
+        const infoModal = document.getElementById('infoModal');
+        const infoBtn = document.getElementById('infoBtn');
+        const closeInfoModalX = document.getElementById('closeInfoModalX');
+
+        function toggleInfoModal() {
+            infoModal.classList.toggle('opacity-0');
+            infoModal.classList.toggle('pointer-events-none');
+            document.querySelector('body').classList.toggle('modal-active');
+        }
+
+        infoBtn.addEventListener('click', toggleInfoModal);
+        closeInfoModalX.addEventListener('click', toggleInfoModal);
+        // Also close when clicking overlay (re-using general logic if desired, or adding specific listener)
+        infoModal.querySelector('.modal-overlay').addEventListener('click', toggleInfoModal);
+
 
         // --- Helper: Toast ---
         function showToast(msg, type = "success") {
